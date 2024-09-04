@@ -1,20 +1,19 @@
 const{ Endereco} = require('../Models');
-exports.creatEndereco = async(req, res) => {
+exports.createEndereco = async(req, res) => {
     try{
-        const {Cep, Logradouro, Numero, Complemento, Bairro,Cidade, Estado, MunicipioIBGE} = req.body
+        const {cep, Logradouro, Numero, Complemento, Bairro,cidade, Estado, MunicipioIBGE} = req.body
         const novoEndereco = await Endereco.create({
-
-            Cep, 
+            cep, 
             Logradouro,
              Numero, 
              Complemento, 
              Bairro,
-             Cidade, 
+             cidade, 
              Estado, 
              MunicipioIBGE,
 
         });
-        res.status(201).json(novoEndereco );
+        res.status(201).json(novoEndereco);
 
     }catch(error){
         res.status(500).json({error: 'erro a criar enderenço', details : error.message});
@@ -36,7 +35,8 @@ exports.getAllEnderecos = async(req, res) =>{
 exports.getEnderecoById = async(req, res) =>{
     try{
         const {Id} = req.params;
-        const endereco = await Endereco.findByPK(Id);
+        const endereco = await Endereco.findByPk(Id);
+        console.log(endereco)
         if(!endereco){
             return res.status(400).json({erro: 'Endereço não encontrado'});
         }
@@ -53,7 +53,7 @@ exports.getEnderecoById = async(req, res) =>{
 exports.updateEndereco = async(req, res) => {
     try{
         const {Id} = req.params;
-        const {Cep, Logradouro, Numero, Complemento, Bairro,Cidade, Estado, MunicipioIBGE} = req.body
+        const {cep, Logradouro, Numero, Complemento, Bairro,Cidade, Estado, MunicipioIBGE} = req.body
         const endereco= await Endereco.findByPK(Id);
 
         if(!endereco){
@@ -61,7 +61,7 @@ exports.updateEndereco = async(req, res) => {
 
         }
 
-            endereco.Cep = Cep;
+            endereco.cep = cep;
             endereco.Logradouro = Logradouro;
             endereco.Numero = Numero;
             endereco.Complemento = Complemento; 
@@ -98,16 +98,3 @@ exports.deleteEndereco = async (req, res) =>{
     }
 
 };
-
-const express = require ('express');
-const enderecoController = require('./controllers/EnderecoController');
-
-const router = express.Router();
-
-router.post('/enderecos' , enderecoController.createEndereco);
-router.get('/enderecos' , enderecoController.getAllEnderecos);
-router.get('/enderecos/: Id' , enderecoController.getEnderecoById);
-router.put('/enderecos/: Id' , enderecoController.updateEndereco);
-router.delete('/enderecos/: Id' , enderecoController.deleteEndereco);
-
-module.exports = router;
